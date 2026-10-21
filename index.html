@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>LabSimplifier</title><meta name="theme-color" content="#0f172a">
+<script>try{var t=localStorage.getItem('ls_theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');document.documentElement.dataset.theme=t}catch(e){}</script>
+<style>
+:root{--bg:#f4f5fa;--card:#fff;--ink:#0f172a;--mut:#64748b;--line:#e2e8f0;--acc:#e5383b;--acc2:#4f46e5;--ok:#16a34a;--r:18px}
+:root[data-theme=dark]{--bg:#0b1020;--card:#141a2e;--ink:#e8ecf8;--mut:#94a3b8;--line:#243050}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding-top:env(safe-area-inset-top,0)}
+#app{max-width:920px;margin:auto;padding:16px 16px 110px}
+h1{font-size:1.6rem;margin:.1em 0}h2{margin:.2em 0}h3{margin:.2em 0;font-size:1.05rem}.mut{color:var(--mut);margin:.2em 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin:12px 0}
+.btn{background:var(--acc);color:#fff;border:0;border-radius:14px;padding:12px 20px;font:600 1rem inherit;cursor:pointer;min-height:44px}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}.btn:disabled{opacity:.4;cursor:not-allowed}
+.pill{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--acc2);background:color-mix(in srgb,var(--acc2) 12%,transparent);padding:3px 10px;border-radius:99px}
+.top{display:flex;justify-content:space-between;align-items:center}.ic{background:var(--card);border:1px solid var(--line);color:var(--ink);border-radius:12px;width:44px;height:44px;font-size:1.2rem;cursor:pointer}
+.bento{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}.bento .card{margin:0}.big{grid-column:1/-1;cursor:pointer}
+.bar{height:8px;background:var(--line);border-radius:9px;margin:12px 0;overflow:hidden}.bar i{display:block;height:100%;background:var(--acc);transition:width .4s}
+.chips{display:flex;flex-wrap:wrap;gap:8px}.chips b,.chip{font-weight:600;font-size:.85rem;border:1px solid var(--line);border-radius:99px;padding:6px 12px;background:transparent;color:var(--ink);cursor:pointer}
+.chip.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.search{position:relative;margin:14px 0}.search input,label input,textarea{width:100%;padding:13px 14px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit}
+#res{background:var(--card);border-radius:14px;margin-top:6px}.row{display:flex;justify-content:space-between;width:100%;padding:13px 14px;border:0;border-bottom:1px solid var(--line);background:none;color:var(--ink);font:inherit;cursor:pointer;text-align:left}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:color-mix(in srgb,var(--card) 85%,transparent);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:8px 8px calc(8px + env(safe-area-inset-bottom,0))}
+nav button{background:none;border:0;color:var(--mut);font:600 .75rem inherit;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:64px;min-height:44px;cursor:pointer}nav button.on{color:var(--acc)}nav span{font-size:1.3rem}
+.auth{max-width:420px;margin:6vh auto}.auth .logo svg{width:56px;height:56px}label{display:block;margin:12px 0;font-size:.85rem;color:var(--mut)}label input{margin-top:4px}
+.tabs{display:flex;gap:6px;background:var(--bg);padding:4px;border-radius:14px;margin:14px 0}.tabs button{flex:1;border:0;background:none;padding:10px;border-radius:10px;font:600 .95rem inherit;color:var(--mut);cursor:pointer}.tabs .on{background:var(--card);color:var(--ink)}
+.err{color:var(--acc);min-height:1.4em;font-size:.9rem;margin-bottom:8px}
+.foot{display:flex;gap:10px;justify-content:space-between;position:sticky;bottom:0;padding:12px 0 calc(12px + env(safe-area-inset-bottom,0));background:linear-gradient(transparent,var(--bg) 30%)}
+.foot .btn{flex:1}canvas{width:100%;height:auto;border-radius:16px;display:block;border:1px solid var(--line)}
+.cap{min-height:3em;font-weight:600;margin:10px 0}.ctl{display:grid;gap:12px}.ctl>div{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.tw{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:.88rem}th,td{border:1px solid var(--line);padding:6px 8px;text-align:center;white-space:nowrap}td input{width:76px;padding:6px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);text-align:center}
+.q button.o{display:block;width:100%;text-align:left;margin:6px 0;padding:12px;border-radius:12px;border:1px solid var(--line);background:none;color:var(--ink);font:inherit;cursor:pointer}.o.good{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 15%,transparent)}.o.bad{border-color:var(--acc)}
+.flip{min-height:200px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:1.1rem;cursor:pointer}
+.formula{font:600 1.4rem Georgia,serif;text-align:center;padding:10px}.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:90px;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;z-index:9}
+summary{cursor:pointer;color:var(--acc2);font-weight:600}@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body>
+<div id="app"><div id="v"></div></div>
+<nav id="nav" style="display:none"><button data-v=home><span>⌂</span>Home</button><button data-v=labs><span>⚗</span>Labs</button><button data-v=profile><span>☺</span>Profile</button><button data-v=support><span>?</span>Support</button></nav>
+<script>
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const H=async t=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t)))].map(b=>b.toString(16).padStart(2,'0')).join('');
+const OK=["98b2652a25b8f921a01c3256feade0a9f571deb29ad3d2e7784c0552b9b38e60","f4f58ca60d3224150a9df80650a97336f3d3b7df9448241e961a524921377d1b","bc4897afb4e0d85adb91eb47b21c827f1755a7492921a904f2c749214d37af15","b8db508700787b0a7df9caa7df013a3fc5a9c2bae207a9f7fe19d17a45779ac7"];
+const st={get(k,d){try{const v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch{return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
+const LOGO='<svg viewBox="0 0 48 48"><rect width="48" height="48" rx="12" fill="#0f172a"/><path d="M6 24h14" stroke="#ff4d4d" stroke-width="3" stroke-linecap="round"/><rect x="22" y="10" width="3" height="28" rx="1.5" fill="#cfe4ff"/><path d="M27 24h15M27 24l14-9M27 24l14 9" stroke="#ff4d4d" stroke-width="2.5" stroke-linecap="round"/></svg>';
+const LABS=[{t:'Laser Light Diffraction',tag:'optics wavelength grating diffraction laser physics light',live:1},{t:'Simple Pendulum',tag:'oscillation gravity time period g'},{t:"Newton's Rings",tag:'optics interference wavelength radius curvature'},{t:"Ohm's Law",tag:'resistance current voltage circuit'},{t:'Meter Bridge',tag:'resistance wheatstone bridge'},{t:'Photoelectric Effect',tag:'planck constant light electrons'},{t:'Hall Effect',tag:'semiconductor magnetic field'}];
+let U=st.get('ls_sess',null),view='home',mode='in';
+const toast=m=>{const d=document.createElement('div');d.className='toast';d.textContent=m;document.body.append(d);setTimeout(()=>d.remove(),2200)};
+const theme=()=>{const t=document.documentElement.dataset.theme=='dark'?'light':'dark';document.documentElement.dataset.theme=t;st.set('ls_theme',t)};
+const prog=()=>st.get('ls_prog',{});
+function app(){$('#nav').style.display=(U&&view!=='exp')?'flex':'none';document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v==view));clearInterval(tm);
+ if(!U)return authV();({home:homeV,labs:labsV,profile:profV,support:supV,exp:expV})[view]();scrollTo(0,0)}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{view=b.dataset.v;app()});
+/* ---------- AUTH ---------- */
+function authV(){$('#v').innerHTML=`<div class="auth card"><div class=logo>${LOGO}</div><h1>LabSimplifier</h1><p class=mut>Practise your lab practical as if you were at the real bench.</p>
+<div class=tabs><button class="${mode=='in'?'on':''}" onclick="mode='in';authV()">Log in</button><button class="${mode=='up'?'on':''}" onclick="mode='up';authV()">Sign up</button></div>
+<label>GITAM registration ID<input id=aid inputmode=numeric autocomplete=username></label>${mode=='up'?'<label>Full name<input id=anm autocomplete=name></label>':''}
+<label>Password (6+ characters)<input id=apw type=password autocomplete="${mode=='up'?'new-password':'current-password'}"></label><div id=aerr class=err></div>
+<button class=btn style="width:100%" onclick="auth()">${mode=='in'?'Log in':'Create account'}</button></div>`}
+async function auth(){const id=$('#aid').value.trim(),pw=$('#apw').value,e=$('#aerr');
+ if(!/^\d{10,11}$/.test(id)||pw.length<6){e.textContent='Enter a valid ID and a password of 6+ characters.';return}
+ const ih=await H(id);if(!OK.includes(ih)){e.textContent='This ID is not registered for the beta yet.';return}
+ const us=st.get('ls_users',{}),ph=await H(id+':'+pw);
+ if(mode=='up'){const nm=($('#anm').value||'').trim();if(!nm){e.textContent='Please enter your name.';return}if(us[ih]){e.textContent='Account exists. Please log in.';return}us[ih]={nm,ph};st.set('ls_users',us)}
+ else if(!us[ih]||us[ih].ph!==ph){e.textContent='Wrong ID or password.';return}
+ U={ih,nm:us[ih].nm};st.set('ls_sess',U);view='home';app()}
+/* ---------- HOME / SEARCH ---------- */
+const searchBox=()=>`<div class=search><input id=q placeholder="Search experiments, e.g. laser, grating…" oninput="srch()" autocomplete=off><div id=res></div></div>`;
+function srch(){const t=$('#q').value.toLowerCase().split(/\s+/).filter(Boolean),r=$('#res');if(!t.length){r.innerHTML='';return}
+ const sc=l=>{const h=(l.t+' '+l.tag).toLowerCase(),ws=h.split(/\s+/);let s=0;for(const w of t){if(l.t.toLowerCase().includes(w))s+=3;else if(ws.some(x=>x.startsWith(w)))s+=2;else if(h.includes(w))s+=1;else return 0}return s+(l.live?1:0)};
+ const m=LABS.map(l=>[sc(l),l]).filter(x=>x[0]).sort((a,b)=>b[0]-a[0]);
+ r.innerHTML=m.length?m.map(([,l])=>`<button class=row ${l.live?'onclick="start()"':''}><b>${l.t}</b><span class=mut>${l.live?'Live':'Coming soon'}</span></button>`).join(''):'<p class=mut style="padding:12px">No experiments match yet.</p>'}
+function homeV(){const p=prog().laser||{},h=new Date().getHours(),g=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
+ $('#v').innerHTML=`<div class=top><div><p class=mut>${g}</p><h1>Hello, ${esc(U.nm.split(' ')[0])} 👋</h1></div><button class=ic onclick="theme()" aria-label="Toggle theme">◐</button></div>${searchBox()}
+<div class=bento><div class="card big" onclick="start()"><span class=pill>${p.step?'Continue':'Start here'}</span><h2>Laser Light Diffraction</h2><p class=mut>Experiment 11 · Optics</p><div class=bar><i style="width:${p.done?100:Math.round((p.step||0)/6*100)}%"></i></div><button class=btn>${p.step?'Resume':'Start'} →</button></div>
+<div class=card><span class=pill>For you</span><h3>Recommended</h3><p class=mut>Find the wavelength of a laser with a grating.</p></div>
+<div class=card><span class=pill>Recent</span><h3>${p.step?'Laser Light Diffraction':'Nothing yet'}</h3><p class=mut>${p.done?'Completed · quiz '+(p.score??'-')+'/'+QZ.length:'Your recent labs appear here'}</p></div>
+<div class=card><span class=pill>Coming soon</span><p class=chips style="margin-top:10px">${LABS.filter(l=>!l.live).map(l=>`<b>${l.t}</b>`).join('')}</p></div></div>`}
+function labsV(){$('#v').innerHTML=`<h1>Labs</h1>${searchBox()}${LABS.map(l=>`<button class="card row" style="border-radius:var(--r)" ${l.live?'onclick="start()"':''}><b>${l.t}</b><span class=mut>${l.live?'Live':'Coming soon'}</span></button>`).join('')}`}
+function profV(){const p=prog().laser||{};$('#v').innerHTML=`<h1>Profile</h1><div class=card><h3>${esc(U.nm)}</h3><p class=mut>B.Tech CSE · Beta tester</p></div><div class=card><h3>Progress</h3><p class=mut>Laser Light Diffraction: ${p.done?'completed, quiz '+(p.score??'-')+'/'+QZ.length:p.step?'in progress':'not started'}</p></div><div class=top><button class="btn ghost" onclick="theme()">Switch theme</button><button class=btn onclick="U=null;localStorage.removeItem('ls_sess');app()">Log out</button></div>`}
+function supV(){$('#v').innerHTML=`<h1>Support</h1><div class=card><h3>Found a bug or have an idea?</h3><p class=mut>Tell the LabSimplifier team what felt wrong or unreal.</p><textarea id=fb rows=4 placeholder="Your feedback…"></textarea><br><br><button class=btn onclick="const f=st.get('ls_fb',[]);f.push($('#fb').value);st.set('ls_fb',f);$('#fb').value='';toast('Thanks! Saved on this device.')">Send</button></div><div class=card><h3>Tips</h3><p class=mut>Record at least 3 readings with different gratings or distances for a reliable mean.</p></div>`}
+/* ---------- EXPERIMENT ---------- */
+const STEPS=['Intro','Formula','Simulation','Result','Quiz','Viva','Overview'],LAM=6.7e-5;
+let S=0,R=[],sim={N:2500,D:200,n:1,stage:0},tm,qa=[],onlyQ=false,vi=0,vShow=false;
+const QZ=[{q:'What is the wavelength of the laser used (as per the manual)?',o:['670 nm (6700 × 10⁻⁸ cm)','450 nm','532 nm','1064 nm'],a:0},{q:'Which relation gives λ in this experiment?',o:['λ = sin φ / (N n)','λ = N n / sin φ','λ = N sin φ · n','λ = D / Yₙ'],a:0},{q:'What does N represent?',o:['Number of lines per cm of the grating','Order of diffraction','Distance to the wall','Number of readings'],a:0},{q:'Why is a laser preferred over an ordinary lamp?',o:['It is monochromatic and coherent','It is hotter','It is brighter only','It needs no power'],a:0},{q:'If N increases, the angle of diffraction for the same order…',o:['Increases','Decreases','Stays the same','Becomes zero'],a:0},{q:'Which maximum is the brightest?',o:['Central (zeroth order)','First order','Second order','All equal'],a:0}];
+const VIVA=[['What is the aim of this experiment?','To find the wavelength of laser light using a diffraction grating.'],['What is diffraction?','The bending and spreading of light around obstacles or through narrow openings, comparable to its wavelength.'],['What is a diffraction grating?','A plate with a large number of equally spaced parallel lines or slits (N lines per cm).'],['State the grating equation.','n λ = (a + b) sin φ, where (a + b) = 1/N is the grating element. So λ = sin φ / (N n).'],['Why do we use a diode laser?','It gives a narrow, intense, monochromatic and coherent beam, so sharp maxima are seen.'],['Why must the grating be normal to the beam?','The grating equation assumes normal incidence. Tilting changes the path difference and gives wrong angles.'],['What is the central maximum?','The bright spot straight ahead (n = 0) where all slits are in phase.'],['How are D and Yₙ measured?','D with a thin rope between grating and wall, then read on a scale. Yₙ is measured on the wall with a scale.'],['Why repeat with different gratings?','To get several independent readings of λ and reduce random error by averaging.'],['What limits the maximum order seen?','sin φ cannot exceed 1, so n < 1/(Nλ).']];
+const LB=prog().laser||{};
+function save(done){const p=prog(),o=p.laser||{};st.set('ls_prog',{...p,laser:{step:S,rows:R,score:score(),done:done||o.done}})}
+const score=()=>qa.filter((a,i)=>a===QZ[i].a).length;
+function start(){const p=prog().laser||{};R=p.rows||[];S=p.step||0;if(S>=3&&R.length<3)S=2;qa=[];view='exp';app()}
+function expV(){$('#v').innerHTML=`<div class=top><button class=ic onclick="view='home';app()" aria-label="Close">✕</button><b>${STEPS[S]} · ${S+1}/${STEPS.length}</b><button class=ic onclick="theme()">◐</button></div><div class=bar><i style="width:${(S+1)/STEPS.length*100}%"></i></div><div id=stage></div>
+<div class=foot><button class="btn ghost" id=bk onclick="mv(-1)">Back</button><button class=btn id=nx onclick="mv(1)">${S==6?'Finish':'Next'}</button></div>`;
+ [intro,formula,simV,resV,quizV,vivaV,overV][S]();gate()}
+function gate(){const n=$('#nx');if(n)n.disabled=(S==2&&R.length<3);const b=$('#bk');if(b)b.style.visibility=S==0?'hidden':'visible'}
+function mv(d){clearInterval(tm);if(S==6&&d>0){save(true);view='home';return app()}S+=d;save();expV();scrollTo(0,0)}
+const intro=()=>$('#stage').innerHTML=`<h2>Laser Light Diffraction</h2><p class=mut>Experiment 11</p><div class=card><h3>Aim</h3><p>To find the wavelength of laser light using a diffraction grating.</p></div><div class=card><h3>Apparatus required</h3><p class=chips style="margin-top:8px">${['Diode laser','Diffraction grating','Screen / wall','Scale','Thin rope'].map(a=>`<b>${a}</b>`).join('')}</p></div>`;
+const formula=()=>$('#stage').innerHTML=`<h2>Formulae</h2><div class=card><div class=formula>λ = sin φ / (N n)</div><div class=formula>sin φ = Yₙ / D</div></div><div class=card><h3>What each symbol means</h3><p><b>λ</b> wavelength of the laser light (6700 × 10⁻⁸ cm)<br><b>N</b> number of lines in 1 cm of the grating (lines/cm)<br><b>n</b> order of diffraction<br><b>φ</b> angle of diffraction<br><b>Yₙ</b> distance of the nth maximum from the central maximum (cm)<br><b>D</b> distance between grating and wall (cm)</p></div><details class=card><summary>Why does this work? (optional)</summary><p class=mut>Neighbouring slits are 1/N cm apart. Bright spots form where the path difference (1/N) sin φ equals a whole number of wavelengths n λ. Rearranging gives λ = sin φ / (N n).</p></details>`;
+/* simulation */
+function Yn(N,D,n){const s=n*N*LAM;if(s>=1)return null;return Math.round((D*s/Math.sqrt(1-s*s)+(((N+D*3+n*7)%9)-4)*.05)*10)/10}
+const CAP=['Switch on the laser: a thin coherent beam leaves the diode.','The beam travels toward the grating.','The grating is placed normal to the beam.','Diffracted orders appear symmetrically about the central maximum.','D is measured with a thin rope; Yₙ is read on the scale. Now take your readings.'];
+function simV(){$('#stage').innerHTML=`<canvas id=cv></canvas><div class=cap id=cap></div><div class="card ctl"><div><b>Grating</b>${[2500,3000,4000].map(v=>`<button class="chip ${sim.N==v?'on':''}" onclick="setS('N',${v})">${v} lines/cm</button>`).join('')}</div><div><b>Distance D</b><input type=range min=100 max=300 step=10 value=${sim.D} oninput="setS('D',+this.value)" style="flex:1;min-width:140px"><b id=dv>${sim.D} cm</b></div><div><b>Order n</b>${[1,2].map(v=>`<button class="chip ${sim.n==v?'on':''}" onclick="setS('n',${v})">n = ${v}</button>`).join('')}</div><div><button class=btn onclick="rec()">Record reading</button><button class="btn ghost" onclick="play()">Replay setup</button><span class=mut id=cnt></span></div></div>`;
+ const c=$('#cv'),d=devicePixelRatio||1;c.width=680*d;c.height=400*d;c.getContext('2d').setTransform(d,0,0,d,0,0);play();cnt()}
+function setS(k,v){sim[k]=v;if(k!='D')simV();else{$('#dv').textContent=v+' cm';draw()}}
+function play(){clearInterval(tm);sim.stage=0;draw();cap();tm=setInterval(()=>{sim.stage++;draw();cap();if(sim.stage>=5)clearInterval(tm)},1500)}
+const cap=()=>{const e=$('#cap');if(e)e.textContent=CAP[Math.max(0,sim.stage-1)]||CAP[0]};
+const cnt=()=>{const e=$('#cnt');if(e)e.textContent=R.length+' of 3+ readings'};
+function rec(){const{N,D,n,stage}=sim,y=Yn(N,D,n);if(stage<5)return toast('Wait for the setup to finish.');if(y==null||y>200)return toast('This order is not on the wall. Try another setting.');
+ if(R.some(r=>r.N==N&&r.D==D&&r.n==n))return toast('Already recorded. Change grating, D or order.');R.push({N,D,n,y});save();cnt();gate();toast('Reading '+R.length+' recorded')}
+const L=(x,a,b,c,d)=>{x.beginPath();x.moveTo(a,b);x.lineTo(c,d);x.stroke()};
+function dot(x,px,py,k){const g=x.createRadialGradient(px,py,0,px,py,34);g.addColorStop(0,`rgba(255,255,255,${.9*k})`);g.addColorStop(.12,`rgba(255,70,70,${k})`);g.addColorStop(1,'rgba(255,0,0,0)');x.fillStyle=g;x.beginPath();x.arc(px,py,34,0,7);x.fill()}
+function draw(){const c=$('#cv');if(!c)return;const x=c.getContext('2d'),{N,D,n,stage:g}=sim,W=680;x.clearRect(0,0,W,400);
+ let b=x.createLinearGradient(0,0,0,175);b.addColorStop(0,'#2b3040');b.addColorStop(1,'#1b1f2d');x.fillStyle=b;x.fillRect(0,0,W,175);
+ const cy=88,gx=120,wx=gx+D*(640-gx)/300;
+ x.fillStyle='#8d96aa';x.fillRect(16,cy-15,70,30);x.fillStyle='#5b6378';x.fillRect(16,cy+15,70,6);x.fillStyle='#ff4d4d';x.fillRect(82,cy-4,5,8);
+ x.save();x.beginPath();x.rect(0,0,W,175);x.clip();x.lineWidth=2;x.shadowColor='#ff2a2a';x.shadowBlur=10;x.strokeStyle='rgba(255,70,70,.95)';
+ if(g>=1)L(x,87,cy,g>=3?gx:wx,cy);
+ if(g>=3){x.shadowBlur=0;x.fillStyle='rgba(190,225,255,.5)';x.fillRect(gx-2,cy-60,4,120);x.strokeStyle='rgba(255,255,255,.45)';x.lineWidth=1;for(let i=-12;i<=12;i++)L(x,gx-2,cy+i*5,gx+2,cy+i*5)}
+ x.fillStyle='#dfe3ee';x.fillRect(wx,cy-88,6,176);
+ if(g>=4){x.lineWidth=1.6;x.shadowColor='#ff2a2a';x.shadowBlur=8;x.strokeStyle='rgba(255,70,70,.75)';L(x,gx,cy,wx,cy);[1,2].forEach(k=>{const y=Yn(N,D,k);if(y!=null)[-1,1].forEach(s=>L(x,gx,cy,wx,cy+s*y*.45))})}
+ if(g>=5){x.shadowBlur=0;x.strokeStyle='#facc15';x.lineWidth=2;const yy=cy+70;L(x,gx,yy,wx,yy);L(x,gx,yy-6,gx,yy+6);L(x,wx,yy-6,wx,yy+6);x.fillStyle='#facc15';x.font='600 13px system-ui';x.textAlign='center';x.fillText('D = '+D+' cm',(gx+wx)/2,yy-8)}
+ x.restore();x.fillStyle='#9aa3b8';x.font='600 11px system-ui';x.textAlign='left';x.fillText('LASER',18,cy-22);x.fillText('GRATING',gx-22,cy-68);x.fillText('WALL',wx-12,cy-94);
+ const w=x.createLinearGradient(0,190,0,400);w.addColorStop(0,'#17181f');w.addColorStop(1,'#101117');x.fillStyle=w;x.fillRect(0,175,W,225);
+ const cx=W/2,sc=(W-40)/400,py=265;x.globalCompositeOperation='lighter';
+ if(g>=1)dot(x,cx,py,g>=4?1:.7);
+ if(g>=4)[1,2].forEach(k=>{const y=Yn(N,D,k);if(y!=null&&y<200)[-1,1].forEach(s=>dot(x,cx+s*y*sc,py,k==1?.85:.6))});x.globalCompositeOperation='source-over';
+ x.fillStyle='#e9e4d0';x.fillRect(20,335,W-40,24);x.fillStyle='#222';x.font='600 10px system-ui';x.textAlign='center';
+ for(let i=-200;i<=200;i+=10){const px=cx+i*sc,l=i%50==0?14:i%20==0?10:6;L(x,px,335,px,335+l);if(i%50==0)x.fillText(Math.abs(i),px,356)}
+ x.fillStyle='#9aa3b8';x.textAlign='left';x.font='600 11px system-ui';x.fillText('WALL VIEW · scale in cm',22,192);
+ if(g>=5){const y=Yn(N,D,n);if(y==null){x.fillStyle='#facc15';x.fillText('Order not formed (sin φ ≥ 1)',22,380)}else if(y<200){x.strokeStyle='#facc15';x.lineWidth=2;L(x,cx,312,cx+y*sc,312);x.fillStyle='#facc15';x.textAlign='center';x.fillText('Y'+n+' = '+y+' cm',cx+y*sc/2,304)}}}
+/* result */
+const calc=r=>{const s=r.y/r.D,l=s/(r.N*r.n);return{s,l,e:Math.abs(l-LAM)/LAM*100}};
+const fl=l=>Math.round(l*1e8)+' × 10⁻⁸';
+function resV(){$('#stage').innerHTML=`<h2>Observation &amp; result</h2><p class=mut>Filled in automatically from your readings. Tap a value to check or edit it.</p><div class="card tw"><table><tr><th>S.No</th><th>N (lines/cm)</th><th>n</th><th>D (cm)</th><th>Yₙ (cm)</th><th>sin φ = Yₙ/D</th><th>λ (cm)</th><th>% error</th></tr>${R.map((r,i)=>`<tr><td>${i+1}</td><td>${r.N}</td><td>${r.n}</td><td><input type=number value=${r.D} oninput="ed(${i},'D',this.value)"></td><td><input type=number step=.1 value=${r.y} oninput="ed(${i},'y',this.value)"></td><td id=s${i}></td><td id=l${i}></td><td id=e${i}></td></tr>`).join('')}</table></div><div class=card id=mean></div><p class=mut>Note: the manual uses sin φ ≈ Yₙ/D, so readings at larger angles show a higher error. That is normal in a real lab.</p>`;R.forEach((_,i)=>rc(i));mn()}
+function ed(i,k,v){R[i][k]=+v;rc(i);mn();save()}
+function rc(i){const c=calc(R[i]);if(!isFinite(c.l))return;$('#s'+i).textContent=c.s.toFixed(4);$('#l'+i).textContent=fl(c.l);$('#e'+i).textContent=c.e.toFixed(2)+' %'}
+function mn(){const e=$('#mean');if(!e)return;const cs=R.map(calc).filter(c=>isFinite(c.l));if(!cs.length)return e.innerHTML='<p class=mut>No readings yet.</p>';const m=cs.reduce((a,c)=>a+c.l,0)/cs.length;e.innerHTML=`<h3>Mean wavelength</h3><div class=formula>λ = ${fl(m)} cm</div><p class=mut>Standard value: 6700 × 10⁻⁸ cm · Error in the mean: <b>${(Math.abs(m-LAM)/LAM*100).toFixed(2)} %</b></p>`}
+/* quiz */
+function quizV(){$('#stage').innerHTML=`<div class=top><h2>Quiz</h2><button class="chip ${onlyQ?'on':''}" onclick="onlyQ=!onlyQ;quizV()">Questions only</button></div>${QZ.map((q,i)=>`<div class="card q"><b>${i+1}. ${q.q}</b>${onlyQ?`<details><summary>Show answer</summary><p>${q.o[q.a]}</p></details>`:q.o.map((o,j)=>`<button class="o ${qa[i]==null?'':j==q.a?'good':qa[i]==j?'bad':''}" onclick="ans(${i},${j})">${o}</button>`).join('')}</div>`).join('')}<p class=mut>${onlyQ?'':'Score: '+score()+' / '+QZ.length}</p>`}
+function ans(i,j){if(qa[i]!=null)return;qa[i]=j;save();quizV()}
+function vivaV(){const[q,a]=VIVA[vi];$('#stage').innerHTML=`<h2>Viva</h2><p class=mut>Question ${vi+1} of ${VIVA.length}. Tap the card to reveal the answer.</p><div class="card flip" onclick="vShow=!vShow;vivaV()">${vShow?'<div><span class=pill>Answer</span><p>'+a+'</p></div>':'<div><span class=pill>Question</span><h3>'+q+'</h3></div>'}</div><div class=top><button class="btn ghost" onclick="vi=(vi+VIVA.length-1)%VIVA.length;vShow=false;vivaV()">← Prev</button><button class="btn ghost" onclick="vi=(vi+1)%VIVA.length;vShow=false;vivaV()">Next →</button></div>`}
+function overV(){const r=R[0],c=r&&calc(r),cs=R.map(calc).filter(x=>isFinite(x.l)),m=cs.length?cs.reduce((a,x)=>a+x.l,0)/cs.length:0;
+ $('#stage').innerHTML=`<div class="card" style="text-align:center"><div style="font-size:2.4rem">🎉</div><h2>Great job, you completed the experiment!</h2><p class=mut>Mean λ = ${fl(m)} cm · Quiz ${score()}/${QZ.length}</p></div>${r?`<div class=card><h3>Worked calculation (reading 1)</h3><p>N = ${r.N} lines/cm, n = ${r.n}, D = ${r.D} cm, Yₙ = ${r.y} cm<br>sin φ = Yₙ / D = ${r.y} / ${r.D} = <b>${c.s.toFixed(4)}</b><br>λ = sin φ / (N n) = ${c.s.toFixed(4)} / (${r.N} × ${r.n}) = <b>${fl(c.l)} cm</b><br>% error = |${fl(c.l)} − 6700 × 10⁻⁸| / 6700 × 10⁻⁸ × 100 = <b>${c.e.toFixed(2)} %</b></p></div>`:''}<div class=card><h3>Result</h3><p>The wavelength of laser light is determined using a diffraction grating and the obtained values are given in the table.</p></div>`}
+app();
+</script></body></html>
